@@ -1,0 +1,125 @@
+
+4 layer
+UI, hook, state and API layer
+
+
+
+
+//**
+Arjun Mehta — Software Engineer
++91 9876543210 | arjunmehta.dev@gmail.com | Bangalore, India
+LinkedIn: https://linkedin.com/in/arjunmehta | GitHub: https://github.com/arjunmehta | Portfolio: https://arjunmehta.dev
+
+PROFESSIONAL SUMMARY
+Highly motivated and detail-oriented Computer Science graduate with a strong foundation in full-stack web development, backend systems, and AI integration. Proven ability to develop and maintain web applications using the MERN stack and implement robust RESTful APIs. Experienced integrating AI services (Gemini API) to enhance application functionality. Passionate about writing clean, maintainable code and contributing to dynamic teams. Eager to apply technical expertise as an Entry-Level Software Engineer at TechNova Solutions.
+
+TECHNICAL SKILLS
+Programming Languages: JavaScript, Python, Java, C++
+Frontend: React.js, Next.js, HTML5, CSS3, Bootstrap
+Backend: Node.js, Express.js
+Databases: MongoDB, PostgreSQL, MySQL
+Tools & Platforms: Git, GitHub, Postman, VS Code, Docker
+Cloud & AI Services: Firebase, Gemini API, OpenAI API
+
+WORK EXPERIENCE
+Software Development Intern — TechNova Solutions Pvt. Ltd., Bangalore, India
+June 2025 – August 2025
+- Developed and maintained RESTful APIs using Node.js and Express.js for a scalable dashboard application.
+- Integrated MongoDB to manage and optimize data storage supporting frontend features.
+- Collaborated with frontend developers to ensure seamless API integration and optimized performance.
+- Improved dashboard loading speed by 25% through efficient API design and database query optimization.
+- Participated in Agile sprint planning, stand-ups, and code reviews.
+
+PROJECTS
+AI Resume Builder
+- Full-stack AI-powered resume builder generating ATS-friendly resumes.
+- Integrated Gemini API to generate personalized professional summaries.
+- Implemented secure user authentication and dynamic resume templating.
+- Enabled PDF export functionality.
+Technologies: Next.js, Node.js, MongoDB, Gemini API
+GitHub: https://github.com/arjunmehta/ai-resume-builder | Live: https://airesumebuilder.vercel.app
+
+Task Management System
+- MERN stack task manager with secure authentication and real-time tracking.
+- Responsive React.js frontend for task creation and updates.
+- Backend APIs with Express.js and Node.js; MongoDB for data management.
+- Implemented JWT authentication for secure user access.
+Technologies: React.js, Express.js, MongoDB, Node.js
+GitHub: https://github.com/arjunmehta/task-manager
+
+E-Commerce Backend API
+- Scalable backend API for e-commerce with product management and payment integration.
+- Designed RESTful APIs for product CRUD operations.
+- Integrated Stripe for secure payment processing.
+- Developed order management and admin authentication systems.
+Technologies: Node.js, Express.js, PostgreSQL
+GitHub: https://github.com/arjunmehta/ecommerce-api
+
+EDUCATION
+Bachelor of Technology (B.Tech) in Computer Science Engineering
+Indian Institute of Technology, Delhi — 2022 – 2026
+CGPA: 8.5
+Relevant Coursework: Data Structures & Algorithms, Database Management Systems, Operating Systems, Computer Networks
+
+CERTIFICATIONS
+- Full Stack Web Development — Udemy
+- JavaScript Algorithms and Data Structures — freeCodeCamp
+- Introduction to Cloud Computing — Coursera
+
+ACHIEVEMENTS
+- Solved 500+ coding problems on LeetCode.
+- Finalist, National Level Hackathon 2025.
+- Built and deployed 10+ full-stack projects.
+
+LANGUAGES
+- English (Fluent)
+- Hindi (Native)
+
+
+
+
+
+
+interface InterviewReport {
+  matchScore: number;
+  technicalQuestions: { question: string; intention: string; answer: string }[];
+  behavioralQuestions: { question: string; intention: string; answer: string }[];
+  skillGaps: { skill: string; severity: 'low' | 'medium' | 'high' }[];
+  strengths: string[];
+  weaknesses: string[];
+  recommendation: string;
+  preparationPlan: { day: number; focus: string; tasks: string[] }[];
+  title: string;
+}
+
+{
+  "matchScore": 78,
+  "technicalQuestions": [
+    { "question": "Explain React reconciliation.", "intention": "Assess DOM diffing knowledge", "answer": "Describe virtual DOM, keys, and performance trade-offs." }
+  ],
+  "behavioralQuestions": [
+    { "question": "Tell me about a time you handled conflict.", "intention": "Assess teamwork and conflict resolution", "answer": "Use STAR, emphasize collaboration and outcome." }
+  ],
+  "skillGaps": [
+    { "skill": "System Design", "severity": "medium" }
+  ],
+  "strengths": ["Strong frontend fundamentals", "Good communication"],
+  "weaknesses": ["Limited backend experience"],
+  "recommendation": "Focus 2 weeks on system design and mock interviews; apply to mid-senior frontend roles.",
+  "preparationPlan": [
+    { "day": 1, "focus": "Data Structures", "tasks": ["Review arrays and hashmaps", "Solve 3 medium problems"] }
+  ],
+  "title": "Senior Frontend Engineer"
+}
+
+
+
+jobDescription:
+**Job Description – Software Developer Intern**
+
+Responsible for assisting in the development, testing, and maintenance of web applications and software solutions. Worked with modern technologies to build responsive user interfaces and improve application performance. Collaborated with team members to solve technical problems, debug issues, and implement new features. Participated in code reviews, documentation, and project planning while gaining hands-on experience in software development practices.
+
+
+
+selfDescription:
+I am a motivated and hardworking individual with a strong interest in technology and software development. I enjoy learning new skills, solving problems, and working on creative projects. I am a quick learner, a good team player, and always eager to improve my knowledge and abilities. My goal is to build a successful career where I can contribute my skills and continue growing professionally.
