@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
@@ -18,39 +19,61 @@ const Register = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
-        <p className="text-lg text-gray-500">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#0d0f1a] px-4">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
+          <p className="text-[14px] text-white/40 font-medium">Loading...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-[#0d0f1a] px-4">
+
+      {/* Subtle background glow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px]" />
+      </div>
+
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-gray-200 rounded-2xl p-10 w-full max-w-sm shadow-sm">
-        <h1 className="text-2xl font-serif font-normal text-gray-900 mb-1">
-          Welcome back
+        className="relative bg-[#13162a] border border-white/[0.07] rounded-2xl p-8 sm:p-10 w-full max-w-sm shadow-2xl"
+      >
+        {/* Logo mark */}
+        <div className="flex items-center gap-2 mb-7">
+          <div className="w-7 h-7 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
+            <svg className="w-3.5 h-3.5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <span className="text-[13px] font-semibold text-white/70 tracking-wide">InterviewAI</span>
+        </div>
+
+        <h1 className="text-xl font-semibold text-white/90 mb-1">
+          Create an account
         </h1>
-        <p className="text-sm text-gray-500 mb-8">
-          Sign in to continue to your account
+        <p className="text-[13px] text-white/40 mb-8">
+          Get started with your personalized interview plan
         </p>
 
-        <div className="mb-5">
-          <label className="block text-xs font-medium uppercase tracking-widest text-gray-500 mb-1.5">
+        {/* Username */}
+        <div className="mb-4">
+          <label className="block text-[10px] font-medium uppercase tracking-widest text-white/30 mb-1.5">
             Username
           </label>
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             type="text"
-            placeholder="you@example.com"
-            className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder:text-gray-400"
+            placeholder="johndoe"
+            className="w-full h-11 px-3.5 rounded-xl border border-white/[0.07] bg-[#1a1d30] text-[13px] text-white/80 placeholder:text-white/20 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all"
           />
         </div>
 
-        <div className="mb-5">
-          <label className="block text-xs font-medium uppercase tracking-widest text-gray-500 mb-1.5">
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block text-[10px] font-medium uppercase tracking-widest text-white/30 mb-1.5">
             Email
           </label>
           <input
@@ -58,12 +81,13 @@ const Register = () => {
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="you@example.com"
-            className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder:text-gray-400"
+            className="w-full h-11 px-3.5 rounded-xl border border-white/[0.07] bg-[#1a1d30] text-[13px] text-white/80 placeholder:text-white/20 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all"
           />
         </div>
 
-        <div className="mb-2">
-          <label className="block text-xs font-medium uppercase tracking-widest text-gray-500 mb-1.5">
+        {/* Password */}
+        <div className="mb-7">
+          <label className="block text-[10px] font-medium uppercase tracking-widest text-white/30 mb-1.5">
             Password
           </label>
           <input
@@ -71,26 +95,32 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Enter your password"
-            className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 placeholder:text-gray-400"
+            className="w-full h-11 px-3.5 rounded-xl border border-white/[0.07] bg-[#1a1d30] text-[13px] text-white/80 placeholder:text-white/20 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all"
           />
         </div>
 
-        <div className="text-right mb-6">
-          <a href="#" className="text-xs text-gray-400 hover:text-gray-700">
-            Forgot password?
-          </a>
-        </div>
-
-        <button className="w-full h-11 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-700 active:scale-[0.98] transition-all">
+        {/* Submit */}
+        <button
+          type="submit"
+          className="w-full h-11 rounded-xl bg-violet-500/20 border border-violet-500/40 text-violet-300 text-[13px] font-medium hover:bg-violet-500/30 hover:border-violet-500/60 active:scale-[0.98] transition-all duration-150"
+        >
           Register
         </button>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Don't have an account?{" "}
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-white/[0.06]" />
+          <span className="text-[11px] text-white/20">or</span>
+          <div className="flex-1 h-px bg-white/[0.06]" />
+        </div>
+
+        <p className="text-center text-[12px] text-white/30">
+          Already have an account?{" "}
           <Link
             to="/login"
-            className="text-gray-900 font-medium hover:underline">
-            login
+            className="text-violet-400 font-medium hover:text-violet-300 transition-colors"
+          >
+            Login
           </Link>
         </p>
       </form>

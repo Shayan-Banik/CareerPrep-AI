@@ -265,7 +265,7 @@ const Home = () => {
         </div>
 
         {/* Recent Reports List */}
-        {/* {reports.length > 0 && (
+        {reports.length > 0 && (
                     <section className="mt-12">
                         <h2 className="text-lg font-semibold text-white mb-5">My Recent Interview Plans</h2>
                         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -294,7 +294,7 @@ const Home = () => {
                             ))}
                         </ul>
                     </section>
-                )} */}
+                )}
 
         {/* Page Footer */}
         <footer className="mt-12 flex items-center justify-center gap-6">

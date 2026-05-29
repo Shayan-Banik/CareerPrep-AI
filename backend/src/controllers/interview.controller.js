@@ -1,5 +1,5 @@
 import * as pdf from "pdf-parse";
-import generateInterviewReport from "../services/ai.service.js";
+import {generateInterviewReport, genarateResumePdf} from "../services/ai.service.js";
 import InterviewReport from "../models/interviewReport.model.js";
 
 
@@ -56,7 +56,7 @@ const generateInterViewReportByIdController = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
  const getAllInterviewReportsController = async (req, res) => {
     try {
@@ -70,6 +70,30 @@ const generateInterViewReportByIdController = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
+};
+
+async function generateResumePdfController(req, res) {
+    const { interviewReportId } = req.params;
+
+    const interviewReportModel = await InterviewReport.findById(interviewReportId);
+
+    if (!interviewReportModel) {
+        return res.status(404).json({
+            message: "Interview report not found.",
+        });
+    }
+
+    const { resume, jobDescription, selfDescription } = interviewReportModel;
+
+    const pdfBuffer = await genarateResumePdf({ resume, jobDescription, selfDescription });
+
+    res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`,
+    });
+
+    res.send(pdfBuffer);
 }
 
-export {generateInterViewReportController, generateInterViewReportByIdController, getAllInterviewReportsController};
+
+export {generateInterViewReportController, generateInterViewReportByIdController, getAllInterviewReportsController, generateResumePdfController};

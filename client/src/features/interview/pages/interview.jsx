@@ -1,350 +1,394 @@
-import { useState } from "react";
-import { useInterview } from "../hooks/useInterview.js";
+import { useState, useEffect } from 'react'
+import { useInterview } from '../hooks/useInterview.js'
+import { useParams } from 'react-router'
 
 const NAV_ITEMS = [
-  { id: "technical", label: "Technical", icon: "💻" },
-  { id: "behavioral", label: "Behavioral", icon: "💬" },
-  { id: "roadmap", label: "Roadmap", icon: "🗺️" },
-];
-
-// const techQuestions = [
-//   { q: "Explain the difference between SQL and NoSQL databases and when you'd choose each.", tip: "Focus on CAP theorem tradeoffs and real use cases.", level: "med" },
-//   { q: "How does React's reconciliation algorithm work?", tip: "Discuss virtual DOM diffing and key props.", level: "hard" },
-//   { q: "Design a rate limiter for a public REST API.", tip: "Cover token bucket, sliding window, and Redis strategies.", level: "hard" },
-//   { q: "What is the event loop in Node.js and how does it affect async code?", tip: "Walk through call stack, task queue, and microtasks.", level: "med" },
-//   { q: "Describe how you'd implement caching to improve API response times.", tip: "Mention CDN, in-memory (Redis), HTTP headers (ETag, Cache-Control).", level: "med" },
-//   { q: "What are the SOLID principles and give an example of each?", tip: "Use a concrete code scenario for at least two principles.", level: "easy" },
-// ];
-
-// const behavioralQuestions = [
-//   { q: "Tell me about a time you disagreed with a technical decision and how you handled it.", tip: "Use STAR method. Show empathy and outcome.", level: "med" },
-//   { q: "Describe a project where you had to learn a new technology quickly.", tip: "Highlight your learning strategy and how it paid off.", level: "easy" },
-//   { q: "How do you prioritize tasks when multiple stakeholders have competing demands?", tip: "Talk about frameworks — MoSCoW, ICE scoring, etc.", level: "med" },
-//   { q: "Give an example of a time you mentored a junior developer.", tip: "Focus on specific actions and the junior's growth.", level: "easy" },
-//   { q: "Describe a major failure in your career and what you learned.", tip: "Be honest, specific, and pivot clearly to the lesson.", level: "hard" },
-// ];
-
-// const roadmapDays = [
-//   { day: 1, title: "System design foundations", tasks: ["Review CAP theorem & distributed systems basics", "Practice designing a URL shortener", "Watch a system design walkthrough video"] },
-//   { day: 2, title: "Data structures & algorithms", tasks: ["Solve 3 LeetCode medium problems on trees", "Review time/space complexity notation", "Flashcard key sorting algorithm complexities"] },
-//   { day: 3, title: "React & frontend deep-dive", tasks: ["Study reconciliation and fiber architecture", "Build a small app using useReducer + Context", "Review common performance pitfalls"] },
-//   { day: 4, title: "Behavioral prep", tasks: ["Write STAR stories for top 5 scenarios", "Record yourself answering one question", "Research the company's engineering culture"] },
-//   { day: 5, title: "Database & caching", tasks: ["Revisit indexing strategies in PostgreSQL", "Set up a Redis cache locally and test TTL", "Compare Redis vs Memcached tradeoffs"] },
-//   { day: 6, title: "Mock interviews", tasks: ["Schedule a peer mock technical interview", "Complete one timed system design session", "Review any weak areas identified"] },
-//   { day: 7, title: "Review & rest", tasks: ["Skim notes and highlight key concepts", "Prepare your questions for the interviewer", "Rest, sleep well, and arrive confident"] },
-// ];
-
-// const skillGaps = [
-//   { skill: "System design", severity: "high" },
-//   { skill: "GraphQL", severity: "high" },
-//   { skill: "TypeScript", severity: "medium" },
-//   { skill: "Redis", severity: "medium" },
-//   { skill: "CI/CD pipelines", severity: "medium" },
-//   { skill: "Docker", severity: "low" },
-// ];
-
-// const report = {
-//   matchScore: 84,
-//   technicalQuestions: techQuestions,
-//   behavioralQuestions: behavioralQuestions,
-//   preparationPlan: roadmapDays,
-//   skillGaps,
-// };
-
-// ── Level badge ──
-function LevelBadge({ level }) {
-  const map = {
-    hard: "bg-red-500/15 text-red-400 border border-red-500/25",
-    med:  "bg-amber-500/15 text-amber-400 border border-amber-500/25",
-    easy: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25",
-  };
-  const label = { hard: "Hard", med: "Medium", easy: "Easy" };
-  return (
-    <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${map[level]}`}>
-      {label[level]}
-    </span>
-  );
-}
+  {
+    id: 'technical', label: 'Technical Questions',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
+      </svg>
+    ),
+  },
+  {
+    id: 'behavioral', label: 'Behavioral Questions',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'roadmap', label: 'Road Map',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="3 11 22 2 13 21 11 13 3 11" />
+      </svg>
+    ),
+  },
+]
 
 // ── Question Card ──
-function QuestionCard({ item, index }) {
+const QuestionCard = ({ item, index }) => {
+  const [open, setOpen] = useState(false)
   return (
-    <div className="bg-[#1a1d30] border border-white/[0.07] rounded-xl p-4 hover:border-white/[0.12] hover:bg-[#1f2338] transition-all duration-150">
-      <div className="flex items-start gap-2.5 mb-2">
-        <span className="font-mono text-[10px] font-medium text-white/30 pt-0.5 min-w-[20px]">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-        <span className="text-[13px] font-medium text-white/90 leading-[1.55]">
-          {item.q}
-        </span>
-      </div>
-      <p className="text-[12px] text-white/50 ml-[30px] leading-relaxed border-l-2 border-violet-500/35 pl-2.5 mb-2">
-        {item.tip}
-      </p>
-      <div className="ml-[30px]">
-        <LevelBadge level={item.level} />
-      </div>
-    </div>
-  );
-}
-
-// ── Roadmap Day ──
-function RoadMapDay({ day }) {
-  const [open, setOpen] = useState(false);
-
-
-
-  return (
-    <div className="border border-white/[0.07] rounded-xl overflow-hidden">
+    <div className="bg-[#1a1d30] border border-white/[0.07] rounded-xl overflow-hidden transition-all duration-150 hover:border-white/[0.12]">
+      {/* Header — always visible */}
       <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-2.5 w-full px-4 py-3 bg-[#1a1d30] hover:bg-[#1f2338] transition-colors duration-150 text-left"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-start gap-3 px-4 py-4 text-left hover:bg-white/[0.02] transition-colors"
       >
-        <span className="font-mono text-[10px] font-medium bg-violet-500/15 text-violet-300 border border-violet-500/25 px-2 py-0.5 rounded-full whitespace-nowrap">
-          Day {day.day}
+        <span className="font-mono text-[11px] font-semibold text-violet-400 bg-violet-500/15 border border-violet-500/25 px-2 py-0.5 rounded-full shrink-0 mt-0.5">
+          Q{index + 1}
         </span>
-        <span className="text-[13px] font-medium text-white/90 flex-1">{day.title}</span>
+        <p className="flex-1 text-[13px] font-medium text-white/90 leading-[1.55]">
+          {item.question}
+        </p>
         <svg
-          className={`w-3.5 h-3.5 text-white/30 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`w-4 h-4 text-white/30 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
+
+      {/* Body — expandable */}
       {open && (
-        <div className="px-4 py-3 bg-[#13162a] border-t border-white/[0.07] flex flex-col gap-1.5">
-          {day.tasks.map((task, i) => (
-            <div key={i} className="flex items-start gap-2 text-[12px] text-white/50">
-              <svg className="w-3.5 h-3.5 text-violet-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {task}
-            </div>
-          ))}
+        <div className="px-4 pb-4 flex flex-col gap-3 border-t border-white/[0.05]">
+          {/* Intention */}
+          <div className="pt-3">
+            <span className="inline-block text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/25 mb-2">
+              Intention
+            </span>
+            <p className="text-[13px] text-white/60 leading-relaxed">{item.intention}</p>
+          </div>
+          {/* Model Answer */}
+          <div>
+            <span className="inline-block text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 mb-2">
+              Model Answer
+            </span>
+            <p className="text-[13px] text-white/60 leading-relaxed border-l-2 border-violet-500/35 pl-3">
+              {item.answer}
+            </p>
+          </div>
         </div>
       )}
     </div>
-  );
+  )
+}
+
+// ── Roadmap Day ──
+const RoadMapDay = ({ day }) => {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="border border-white/[0.07] rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-3 w-full px-4 py-3 bg-[#1a1d30] hover:bg-[#1f2338] transition-colors duration-150 text-left"
+      >
+        <span className="font-mono text-[10px] font-semibold bg-violet-500/15 text-violet-300 border border-violet-500/25 px-2.5 py-0.5 rounded-full whitespace-nowrap">
+          Day {day.day}
+        </span>
+        <span className="flex-1 text-[13px] font-medium text-white/90">{day.focus}</span>
+        <svg
+          className={`w-4 h-4 text-white/30 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+      {open && (
+        <div className="px-4 py-3 bg-[#13162a] border-t border-white/[0.07]">
+          <ul className="flex flex-col gap-2">
+            {day.tasks.map((task, i) => (
+              <li key={i} className="flex items-start gap-2 text-[12px] text-white/50">
+                <svg className="w-3.5 h-3.5 text-violet-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {task}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  )
 }
 
 // ── Score Ring ──
-function ScoreRing({ score }) {
-  const r = 42;
-  const circ = 2 * Math.PI * r;
-  const offset = circ * (1 - score / 100);
+const ScoreRing = ({ score, uid = "a" }) => {
+  const r = 42
+  const circ = 2 * Math.PI * r
+  const offset = circ * (1 - score / 100)
+  const color = score >= 80 ? ['#10b981', '#34d399'] : score >= 60 ? ['#d97706', '#fbbf24'] : ['#dc2626', '#f87171']
+  const gradId = `scoreGrad-${uid}`
   return (
     <div className="relative w-24 h-24 my-1">
       <svg className="absolute inset-0 -rotate-90" viewBox="0 0 100 100" width="100" height="100">
         <defs>
-          <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#7c6fe0" />
-            <stop offset="100%" stopColor="#a78bfa" />
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={color[0]} />
+            <stop offset="100%" stopColor={color[1]} />
           </linearGradient>
         </defs>
         <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
         <circle
           cx="50" cy="50" r={r} fill="none"
-          stroke="url(#scoreGrad)" strokeWidth="7"
+          stroke={`url(#${gradId})`} strokeWidth="7"
           strokeDasharray={circ.toFixed(1)}
           strokeDashoffset={offset.toFixed(1)}
           strokeLinecap="round"
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-mono text-2xl font-medium text-white leading-none">{score}</span>
+        <span className="font-mono text-2xl font-semibold text-white leading-none">{score}</span>
         <span className="text-[11px] text-white/30 mt-0.5">%</span>
       </div>
     </div>
-  );
+  )
 }
 
 // ── Skill Tag ──
-function SkillTag({ gap }) {
+const SkillTag = ({ gap }) => {
   const map = {
-    high:   "bg-red-500/15 text-red-400 border-red-500/25",
-    medium: "bg-amber-500/15 text-amber-400 border-amber-500/25",
-    low:    "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
-  };
+    high:   'bg-red-500/15 text-red-400 border-red-500/25',
+    medium: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
+    low:    'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
+  }
   return (
-    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${map[gap.severity]}`}>
+    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full border ${map[gap.severity] ?? map.low}`}>
       {gap.skill}
     </span>
-  );
+  )
 }
 
+// ── Section Header ──
+const SectionHeader = ({ title, badge }) => (
+  <div className="flex items-baseline gap-2.5 mb-5 pb-3 border-b border-white/[0.07]">
+    <h2 className="text-[15px] font-semibold text-white/90">{title}</h2>
+    <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/25">
+      {badge}
+    </span>
+  </div>
+)
+
+// ── Sidebar Content (reused on mobile + desktop) ──
+const SidebarContent = ({ report, uid = "a" }) => {
+  const scoreLabel = report.matchScore >= 80 ? 'Strong match for this role' : report.matchScore >= 60 ? 'Moderate match for this role' : 'Low match — keep preparing'
+  return (
+    <>
+      <div className="flex flex-col items-center gap-2">
+        <p className="text-[10px] font-medium tracking-widest uppercase text-white/25 self-start">Match Score</p>
+        <ScoreRing score={report.matchScore} uid={uid} />
+        <span className="text-[11px] text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 rounded-full text-center">
+          {scoreLabel}
+        </span>
+      </div>
+      <div className="h-px bg-white/[0.07] my-5" />
+      <div>
+        <p className="text-[10px] font-medium tracking-widest uppercase text-white/25 mb-3">Skill Gaps</p>
+        <div className="flex flex-wrap gap-1.5">
+          {report.skillGaps.map((gap, i) => <SkillTag key={i} gap={gap} />)}
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ── Loading Screen ──
+const LoadingScreen = () => (
+  <div className="min-h-screen bg-[#0d0f1a] flex items-center justify-center">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
+      <p className="text-[14px] text-white/40 font-medium">Loading your interview plan…</p>
+    </div>
+  </div>
+)
+
 // ── Main Component ──
-export default function Interview() {
-  const [activeNav, setActiveNav] = useState("technical");
-  const { report } = useInterview();
+const Interview = () => {
+  const [activeNav, setActiveNav] = useState('technical')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { report, getReportById, loading, getResumePdf } = useInterview()
+  const { interviewId } = useParams()
+
+  useEffect(() => {
+    if (interviewId) getReportById(interviewId)
+  }, [interviewId])
+
+  if (loading || !report) return <LoadingScreen />
+
+  const activeItem = NAV_ITEMS.find(n => n.id === activeNav)
 
   return (
-    <div className="min-h-screen bg-[#0d0f1a] p-3 sm:p-4 md:p-6 font-sans">
-      
-      {/* Mobile Nav */}
-      <div className="lg:hidden flex gap-2 mb-3 overflow-x-auto pb-1">
-        {NAV_ITEMS.map((item) => (
+    <div className="min-h-screen bg-[#0d0f1a] p-3 sm:p-5 lg:p-6">
+
+      {/* ════════════════════════════════════
+          MOBILE LAYOUT  (< lg)
+      ════════════════════════════════════ */}
+      <div className="lg:hidden flex flex-col gap-3">
+
+        {/* Top bar: section picker + download */}
+        <div className="flex items-center justify-between gap-2">
+          {/* Dropdown nav */}
+          <div className="relative">
+            <button
+              onClick={() => setMobileMenuOpen(o => !o)}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-500/15 border border-violet-500/30 text-violet-300 text-[13px] font-medium"
+            >
+              <span className="text-violet-300">{activeItem?.icon}</span>
+              <span>{activeItem?.label}</span>
+              <svg className={`w-3.5 h-3.5 transition-transform ${mobileMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            {mobileMenuOpen && (
+              <div className="absolute top-full left-0 mt-1.5 z-50 bg-[#1a1d30] border border-white/[0.1] rounded-xl overflow-hidden shadow-2xl min-w-[210px]">
+                {NAV_ITEMS.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => { setActiveNav(item.id); setMobileMenuOpen(false) }}
+                    className={`flex items-center gap-2.5 w-full px-4 py-3 text-[13px] transition-colors
+                      ${activeNav === item.id
+                        ? 'bg-violet-500/20 text-violet-300 font-medium'
+                        : 'text-white/50 hover:bg-white/[0.04] hover:text-white/80'}`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Download button */}
           <button
-            key={item.id}
-            onClick={() => setActiveNav(item.id)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap text-[13px] border transition-all duration-150
-              ${
-                activeNav === item.id
-                  ? "bg-violet-500/15 text-violet-300 border-violet-500/30 font-medium"
-                  : "text-white/40 border-transparent hover:bg-white/[0.04] hover:text-white/70"
-              }`}
+            onClick={() => getResumePdf(interviewId)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-violet-500/40 bg-violet-500/15 text-violet-300 text-[12px] font-medium hover:bg-violet-500/25 transition-all"
           >
-            <span>{item.icon}</span>
-            {item.label}
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download Resume
           </button>
-        ))}
+        </div>
+
+        {/* Score + Skill Gaps card */}
+        <div className="bg-[#13162a] border border-white/[0.07] rounded-2xl p-4">
+          <SidebarContent report={report} uid="mobile" />
+        </div>
+
+        {/* Questions / Roadmap content */}
+        <div className="bg-[#13162a] border border-white/[0.07] rounded-2xl p-4">
+          {activeNav === 'technical' && (
+            <section>
+              <SectionHeader title="Technical Questions" badge={`${report.technicalQuestions.length} questions`} />
+              <div className="flex flex-col gap-2">
+                {report.technicalQuestions.map((q, i) => <QuestionCard key={i} item={q} index={i} />)}
+              </div>
+            </section>
+          )}
+          {activeNav === 'behavioral' && (
+            <section>
+              <SectionHeader title="Behavioral Questions" badge={`${report.behavioralQuestions.length} questions`} />
+              <div className="flex flex-col gap-2">
+                {report.behavioralQuestions.map((q, i) => <QuestionCard key={i} item={q} index={i} />)}
+              </div>
+            </section>
+          )}
+          {activeNav === 'roadmap' && (
+            <section>
+              <SectionHeader title="Preparation Road Map" badge={`${report.preparationPlan.length}-day plan`} />
+              <div className="flex flex-col gap-2">
+                {report.preparationPlan.map(day => <RoadMapDay key={day.day} day={day} />)}
+              </div>
+            </section>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[190px_1px_1fr_1px_210px] bg-[#13162a] border border-white/[0.07] rounded-2xl overflow-hidden min-h-[560px]">
-        
-        {/* ── Left Nav ── */}
-        <nav className="hidden lg:flex flex-col justify-between p-4 bg-[#0d0f1a]">
+      {/* ════════════════════════════════════
+          DESKTOP LAYOUT  (>= lg)
+      ════════════════════════════════════ */}
+      <div className="hidden lg:grid lg:grid-cols-[200px_1px_1fr_1px_220px] bg-[#13162a] border border-white/[0.07] rounded-2xl overflow-hidden min-h-[580px]">
+
+        {/* Left Nav */}
+        <nav className="flex flex-col justify-between p-4 bg-[#0d0f1a] border-r border-white/[0.07]">
           <div>
-            <p className="text-[10px] font-medium tracking-widest uppercase text-white/25 mb-2.5 pl-2">
+            <p className="text-[10px] font-medium tracking-widest uppercase text-white/25 mb-3 pl-2">
               Sections
             </p>
-
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.map(item => (
               <button
                 key={item.id}
                 onClick={() => setActiveNav(item.id)}
-                className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg mb-0.5 text-[13px] transition-all duration-150 border text-left
-                  ${
-                    activeNav === item.id
-                      ? "bg-violet-500/15 text-violet-300 border-violet-500/30 font-medium"
-                      : "text-white/40 border-transparent hover:bg-white/[0.04] hover:text-white/70"
+                className={`flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl mb-1 text-[13px] transition-all duration-150 border text-left
+                  ${activeNav === item.id
+                    ? 'bg-violet-500/15 text-violet-300 border-violet-500/30 font-medium'
+                    : 'text-white/40 border-transparent hover:bg-white/[0.04] hover:text-white/70'
                   }`}
               >
-                <span className="text-base">{item.icon}</span>
+                <span className={activeNav === item.id ? 'text-violet-300' : 'text-white/30'}>
+                  {item.icon}
+                </span>
                 {item.label}
               </button>
             ))}
           </div>
-
-          <button className="flex items-center justify-center gap-1.5 w-full px-3 py-2.5 rounded-lg border border-violet-500/40 bg-violet-500/15 text-violet-300 font-mono text-[11px] font-medium hover:bg-violet-500/25 hover:border-violet-500 transition-all duration-150">
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
+          <button
+            onClick={() => getResumePdf(interviewId)}
+            className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl border border-violet-500/40 bg-violet-500/15 text-violet-300 text-[12px] font-medium hover:bg-violet-500/25 hover:border-violet-500 transition-all duration-150"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Download resume
+            Download Resume
           </button>
         </nav>
 
-        {/* ── Divider ── */}
-        <div className="hidden lg:block bg-white/[0.07]" />
+        {/* Divider */}
+        <div className="bg-white/[0.07]" />
 
-        {/* ── Center Content ── */}
-        <main className="p-4 sm:p-5 md:p-6 overflow-y-auto bg-[#13162a] order-2 lg:order-none">
-          
-          {activeNav === "technical" && (
+        {/* Center Content */}
+        <main className="p-6 overflow-y-auto max-h-[580px] bg-[#13162a]">
+          {activeNav === 'technical' && (
             <section>
-              <div className="flex flex-wrap items-baseline gap-2.5 mb-5 pb-3 border-b border-white/[0.07]">
-                <h2 className="text-[15px] font-semibold text-white/90">
-                  Technical questions
-                </h2>
-
-                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/25">
-                  {report.technicalQuestions.length} questions
-                </span>
-              </div>
-
+              <SectionHeader title="Technical Questions" badge={`${report.technicalQuestions.length} questions`} />
               <div className="flex flex-col gap-2">
-                {report.technicalQuestions.map((q, i) => (
-                  <QuestionCard key={i} item={q} index={i} />
-                ))}
+                {report.technicalQuestions.map((q, i) => <QuestionCard key={i} item={q} index={i} />)}
               </div>
             </section>
           )}
-
-          {activeNav === "behavioral" && (
+          {activeNav === 'behavioral' && (
             <section>
-              <div className="flex flex-wrap items-baseline gap-2.5 mb-5 pb-3 border-b border-white/[0.07]">
-                <h2 className="text-[15px] font-semibold text-white/90">
-                  Behavioral questions
-                </h2>
-
-                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/25">
-                  {report.behavioralQuestions.length} questions
-                </span>
-              </div>
-
+              <SectionHeader title="Behavioral Questions" badge={`${report.behavioralQuestions.length} questions`} />
               <div className="flex flex-col gap-2">
-                {report.behavioralQuestions.map((q, i) => (
-                  <QuestionCard key={i} item={q} index={i} />
-                ))}
+                {report.behavioralQuestions.map((q, i) => <QuestionCard key={i} item={q} index={i} />)}
               </div>
             </section>
           )}
-
-          {activeNav === "roadmap" && (
+          {activeNav === 'roadmap' && (
             <section>
-              <div className="flex flex-wrap items-baseline gap-2.5 mb-5 pb-3 border-b border-white/[0.07]">
-                <h2 className="text-[15px] font-semibold text-white/90">
-                  Preparation road map
-                </h2>
-
-                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/25">
-                  {report.preparationPlan.length}-day plan
-                </span>
-              </div>
-
+              <SectionHeader title="Preparation Road Map" badge={`${report.preparationPlan.length}-day plan`} />
               <div className="flex flex-col gap-2">
-                {report.preparationPlan.map((day) => (
-                  <RoadMapDay key={day.day} day={day} />
-                ))}
+                {report.preparationPlan.map(day => <RoadMapDay key={day.day} day={day} />)}
               </div>
             </section>
           )}
         </main>
 
-        {/* ── Divider ── */}
-        <div className="hidden lg:block bg-white/[0.07]" />
+        {/* Divider */}
+        <div className="bg-white/[0.07]" />
 
-        {/* ── Right Sidebar ── */}
-        <aside className="p-4 sm:p-5 bg-[#0d0f1a] flex flex-col border-b lg:border-b-0 lg:border-l border-white/[0.07] order-1 lg:order-none">
-
-          {/* Match Score */}
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-[10px] font-medium tracking-widest uppercase text-white/25 self-start">
-              Match score
-            </p>
-
-            <ScoreRing score={report.matchScore} />
-
-            <span className="text-[11px] text-emerald-400 bg-emerald-500/12 border border-emerald-500/20 px-3 py-1 rounded-full text-center">
-              Strong match for this role
-            </span>
-          </div>
-
-          <div className="h-px bg-white/[0.07] my-5" />
-
-          {/* Skill Gaps */}
-          <div>
-            <p className="text-[10px] font-medium tracking-widest uppercase text-white/25 mb-3">
-              Skill gaps
-            </p>
-
-            <div className="flex flex-wrap gap-1.5">
-              {report.skillGaps.map((gap, i) => (
-                <SkillTag key={i} gap={gap} />
-              ))}
-            </div>
-          </div>
+        {/* Right Sidebar */}
+        <aside className="p-5 bg-[#13162a] flex flex-col border-l border-white/[0.07]">
+          <SidebarContent report={report} uid="desktop" />
         </aside>
       </div>
+
     </div>
-  );
+  )
 }
+
+export default Interview;
