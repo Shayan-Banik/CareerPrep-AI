@@ -1,157 +1,9 @@
-// import { GoogleGenAI } from "@google/genai";
-// import dotenv from "dotenv";
-// dotenv.config();
-// import { z } from "zod";
-// import { zodToJsonSchema } from "zod-to-json-schema"; //forn normalizing ai response and validating it against schema
-
-// const ai = new GoogleGenAI({
-//   apiKey: process.env.GEMINI_API_KEY,
-// });
-
-// const interviewReportSchema = z.object({
-//   matchScore: z
-//     .number()
-//     .describe(
-//       "A score between 0 and 100 indicating how well the candidate's profile matches the job describe",
-//     ),
-//   technicalQuestions: z
-//     .array(
-//       z.object({
-//         question: z
-//           .string()
-//           .describe("The technical question can be asked in the interview"),
-//         intention: z
-//           .string()
-//           .describe("The intention of interviewer behind asking this question"),
-//         answer: z
-//           .string()
-//           .describe(
-//             "How to answer this question, what points to cover, what approach to take etc.",
-//           ),
-//       }),
-//     )
-//     .describe(
-//       "Technical questions that can be asked in the interview along with their intention and how to answer them",
-//     ),
-//   behavioralQuestions: z
-//     .array(
-//       z.object({
-//         question: z
-//           .string()
-//           .describe("The technical question can be asked in the interview"),
-//         intention: z
-//           .string()
-//           .describe("The intention of interviewer behind asking this question"),
-//         answer: z
-//           .string()
-//           .describe(
-//             "How to answer this question, what points to cover, what approach to take etc.",
-//           ),
-//       }),
-//     )
-//     .describe(
-//       "Behavioral questions that can be asked in the interview along with their intention and how to answer them",
-//     ),
-//   skillGaps: z
-//     .array(
-//       z.object({
-//         skill: z.string().describe("The skill which the candidate is lacking"),
-//         severity: z
-//           .enum(["low", "medium", "high"])
-//           .describe(
-//             "The severity of this skill gap, i.e. how important is this skill for the job and how much it can impact the candidate's chances",
-//           ),
-//       }),
-//     )
-//     .describe(
-//       "List of skill gaps in the candidate's profile along with their severity",
-//     ),
-//   preparationPlan: z
-//     .array(
-//       z.object({
-//         day: z
-//           .number()
-//           .describe("The day number in the preparation plan, starting from 1"),
-//         focus: z
-//           .string()
-//           .describe(
-//             "The main focus of this day in the preparation plan, e.g. data structures, system design, mock interviews etc.",
-//           ),
-//         tasks: z
-//           .array(z.string())
-//           .describe(
-//             "List of tasks to be done on this day to follow the preparation plan, e.g. read a specific book or article, solve a set of problems, watch a video etc.",
-//           ),
-//       }),
-//     )
-//     .describe(
-//       "A day-wise preparation plan for the candidate to follow in order to prepare for the interview effectively",
-//     ),
-//   title: z
-//     .string()
-//     .describe(
-//       "The title of the job for which the interview report is generated",
-//     ),
-// });
-
-// async function generateInterviewReport({
-//   resume,
-//   selfDescription,
-//   jobDescription,
-// }) {
-//   const prompt = `
-//             Generate an interview report for a candidate with the following details:
-//             - Return ONLY valid JSON.
-
-// Do not use markdown.
-// Do not wrap response in \`\`\`.
-
-//             - Follow interviewReportSchema exactly
-//             - Candidate name, appliedPosition and provide overall match score
-//             - provide technicalQuestions(question, intention, answer), behavioralQuestions(question, intention, answer), skillGaps(skill, severity), based on the candidate's profile and job
-//             description
-//             - Strengths and weaknesses should be based on the candidate's profile and job description, and should be specific and actionable
-
-//             - preparationPlan(day, focus, tasks) should be detailed and actionable, providing specific tasks for each day that the candidate can follow to improve their chances in the interview
-//             - Keep recommendation concise
-//                         Resume: ${resume}
-//                         Self Description: ${selfDescription}
-//                         Job Description: ${jobDescription}
-// `;
-
-//   const response = await ai.models.generateContent({
-//     // model: "gemini-3-flash-preview",
-//     model: "gemini-2.5-flash",
-//     contents: prompt,
-//     config: {
-//       responseMimeType: "application/json",
-//       // responseSchema: zodToJsonSchema(interviewReportSchema),
-//     },
-//   });
-
-//   console.log(response.text);
-//   const parsedData = JSON.parse(response.text);
-
-//   const validatedData = interviewReportSchema.safeParse(parsedData.interviewReport);
-
-//   if (!validatedData.success) {
-//     console.log(validatedData.error.errors);
-//     console.log(validatedData.error.issues);
-//     throw new Error("Invalid AI response");
-//   }
-
-//   return validatedData.data;
-// }
-
-// export default generateInterviewReport;
-
 import { GoogleGenAI } from "@google/genai";
 import puppeteer from "puppeteer";
 import dotenv from "dotenv";
 dotenv.config();
 
 import { z } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -162,43 +14,171 @@ const interviewReportSchema = z.object({
 
   technicalQuestions: z.array(
     z.object({
-      question: z.string(),
-      intention: z.string(),
-      answer: z.string(),
+      question: z.string().min(1),
+      intention: z.string().min(1),
+      answer: z.string().min(1),
     }),
   ),
 
   behavioralQuestions: z.array(
     z.object({
-      question: z.string(),
-      intention: z.string(),
-      answer: z.string(),
+      question: z.string().min(1),
+      intention: z.string().min(1),
+      answer: z.string().min(1),
     }),
   ),
 
   skillGaps: z.array(
     z.object({
-      skill: z.string(),
+      skill: z.string().min(1, "Skill name cannot be empty"),
       severity: z.enum(["low", "medium", "high"]),
     }),
   ),
 
-  strengths: z.array(z.string()),
+  strengths: z.array(z.string().min(1)),
 
-  weaknesses: z.array(z.string()),
+  weaknesses: z.array(z.string().min(1)),
 
-  recommendation: z.string(),
+  recommendation: z.string().min(1),
 
   preparationPlan: z.array(
     z.object({
       day: z.number(),
-      focus: z.string(),
-      tasks: z.array(z.string()),
+      focus: z.string().min(1),
+      tasks: z.array(z.string().min(1)),
     }),
   ),
 
-  title: z.string(),
+  title: z.string().min(1),
 });
+
+// Hand-written Gemini-compatible schema (OpenAPI subset).
+// zodToJsonSchema was producing broken output for nested object arrays,
+// causing Gemini to ignore structure entirely and echo field names as values.
+const GEMINI_INTERVIEW_REPORT_SCHEMA = {
+  type: "object",
+  properties: {
+    matchScore: { type: "number" },
+    technicalQuestions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          question: { type: "string" },
+          intention: { type: "string" },
+          answer: { type: "string" },
+        },
+        required: ["question", "intention", "answer"],
+      },
+    },
+    behavioralQuestions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          question: { type: "string" },
+          intention: { type: "string" },
+          answer: { type: "string" },
+        },
+        required: ["question", "intention", "answer"],
+      },
+    },
+    skillGaps: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          skill: { type: "string" },
+          severity: { type: "string", enum: ["low", "medium", "high"] },
+        },
+        required: ["skill", "severity"],
+      },
+    },
+    strengths: {
+      type: "array",
+      items: { type: "string" },
+    },
+    weaknesses: {
+      type: "array",
+      items: { type: "string" },
+    },
+    recommendation: { type: "string" },
+    preparationPlan: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          day: { type: "number" },
+          focus: { type: "string" },
+          tasks: {
+            type: "array",
+            items: { type: "string" },
+          },
+        },
+        required: ["day", "focus", "tasks"],
+      },
+    },
+    title: { type: "string" },
+  },
+  required: [
+    "matchScore",
+    "technicalQuestions",
+    "behavioralQuestions",
+    "skillGaps",
+    "strengths",
+    "weaknesses",
+    "recommendation",
+    "preparationPlan",
+    "title",
+  ],
+};
+
+const GEMINI_RESUME_HTML_SCHEMA = {
+  type: "object",
+  properties: {
+    html: { type: "string" },
+  },
+  required: ["html"],
+};
+
+// Detects the "schema collapsed to flat strings" failure mode before it
+// ever reaches Mongoose, so we fail fast with a clear error instead of
+// silently saving garbage or crashing deep in a validator.
+function looksStructurallyValid(report) {
+  const isArrayOfObjects = (arr) =>
+    Array.isArray(arr) && arr.every((item) => item && typeof item === "object" && !Array.isArray(item));
+
+  if (!isArrayOfObjects(report.technicalQuestions)) return false;
+  if (!isArrayOfObjects(report.behavioralQuestions)) return false;
+  if (!isArrayOfObjects(report.skillGaps)) return false;
+  if (!isArrayOfObjects(report.preparationPlan)) return false;
+
+  return true;
+}
+
+async function callGeminiForReport(prompt) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: GEMINI_INTERVIEW_REPORT_SCHEMA,
+      temperature: 0.3,
+    },
+  });
+
+  const rawText = response.text;
+  console.log("RAW AI RESPONSE:");
+  console.log(rawText);
+
+  const cleanedText = rawText
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .replace(/`/g, "")
+    .trim();
+
+  return JSON.parse(cleanedText);
+}
 
 async function generateInterviewReport({
   resume,
@@ -208,60 +188,19 @@ async function generateInterviewReport({
   const prompt = `
 Generate an interview report.
 
-Return ONLY valid JSON.
+Return ONLY valid JSON matching the provided schema exactly.
 
 Do not use markdown.
 Do not wrap response in backticks.
+Do not return placeholder text, field names as values, or example strings — every value must be real, specific content generated from the resume, self description, and job description below.
+Do not include empty strings, null values, or padding entries anywhere in the response.
 
-IMPORTANT:
-Use EXACT field names only.
-
-Required fields:
-- matchScore
-- technicalQuestions
-- behavioralQuestions
-- skillGaps
-- strengths
-- weaknesses
-- recommendation
-- preparationPlan
-- title
-
-Technical/Behavioral Question format:
-{
-  "question": "string",
-  "intention": "string",
-  "answer": "string"
-}
-
-Skill Gap format:
-{
-  "skill": "string",
-  "severity": "low | medium | high"
-}
-
-Strengths format:
-[
-  "strength 1",
-  "strength 2"
-]
-
-Weaknesses format:
-[
-  "weakness 1",
-  "weakness 2"
-]
-
-Recommendation format:
-"final recommendation string"
-
-Preparation Plan format:
-{
-  "day": number,
-  "focus": "string",
-  "tasks": ["task1", "task2"],
-  ... upto 7 days
-}
+- technicalQuestions and behavioralQuestions: max 5 items each, each item is an object with question, intention, and answer.
+- skillGaps: max 5 items, each item is an object with skill and severity ("low" | "medium" | "high").
+- strengths / weaknesses: max 5 items each, plain strings, no empty strings.
+- recommendation: a single final recommendation string.
+- preparationPlan: up to 7 day objects, each with day (number), focus (string), and tasks (array of strings).
+- title: a short string, e.g. the role being interviewed for.
 
 Resume:
 ${resume}
@@ -274,31 +213,21 @@ ${jobDescription}
 `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        temperature: 0.3,
-      },
-    });
+    let parsedData = await callGeminiForReport(prompt);
+    let report = parsedData.interviewReport || parsedData;
 
-    const rawText = response.text;
-    console.log("RAW AI RESPONSE:");
-    console.log(rawText);
+    // Retry once if Gemini returns the "flattened schema keys" failure mode
+    if (!looksStructurallyValid(report)) {
+      console.log("STRUCTURAL VALIDATION FAILED — retrying Gemini call once");
+      parsedData = await callGeminiForReport(prompt);
+      report = parsedData.interviewReport || parsedData;
 
-    const cleanedText = rawText
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .replace(/`/g, "")
-      .trim();
-
-    const parsedData = JSON.parse(cleanedText);
-
-    const report = parsedData.interviewReport || parsedData;
+      if (!looksStructurallyValid(report)) {
+        throw new Error("Gemini returned malformed structure twice in a row");
+      }
+    }
 
     const normalizedData = {
-      // matchScore: report.matchScore || report.overallMatchScore || 0,
       matchScore:
         typeof report.matchScore === "number"
           ? report.matchScore <= 1
@@ -310,47 +239,54 @@ ${jobDescription}
               : Math.round(report.overallMatchScore)
             : 0,
 
-      technicalQuestions:
-        report.technicalQuestions?.map((q) => ({
-          question: q.question || "",
+      technicalQuestions: (report.technicalQuestions || [])
+        .map((q) => ({
+          question: (q.question || "").trim(),
+          intention: (q.intention || q.feedback || "Technical evaluation").trim(),
+          answer: (q.answer || "").trim(),
+        }))
+        .filter((q) => q.question.length > 0 && q.answer.length > 0),
 
-          intention: q.intention || q.feedback || "Technical evaluation",
+      behavioralQuestions: (report.behavioralQuestions || [])
+        .map((q) => ({
+          question: (q.question || "").trim(),
+          intention: (q.intention || q.feedback || "Behavioral evaluation").trim(),
+          answer: (q.answer || "").trim(),
+        }))
+        .filter((q) => q.question.length > 0 && q.answer.length > 0),
 
-          answer: q.answer || "",
-        })) || [],
-
-      behavioralQuestions:
-        report.behavioralQuestions?.map((q) => ({
-          question: q.question || "",
-
-          intention: q.intention || q.feedback || "Behavioral evaluation",
-
-          answer: q.answer || "",
-        })) || [],
-
-      skillGaps:
-        report.skillGaps?.map((gap) => ({
-          skill: gap.skill || "",
-
+      skillGaps: (report.skillGaps || [])
+        .map((gap) => ({
+          skill: (gap.skill || "").trim(),
           severity: gap.severity?.toLowerCase()?.trim() || "low",
-        })) || [],
+        }))
+        .filter((gap) => gap.skill.length > 0)
+        .slice(0, 10),
 
-      strengths: report.strengths || [],
+      strengths: (report.strengths || [])
+        .map((s) => (s || "").trim())
+        .filter(Boolean)
+        .slice(0, 10),
 
-      weaknesses: report.weaknesses || [],
+      weaknesses: (report.weaknesses || [])
+        .map((s) => (s || "").trim())
+        .filter(Boolean)
+        .slice(0, 10),
 
-      recommendation: report.recommendation || "No recommendation provided",
+      recommendation: (report.recommendation || "No recommendation provided").trim(),
 
-      preparationPlan:
-        report.preparationPlan?.map((plan, index) => ({
+      preparationPlan: (report.preparationPlan || [])
+        .map((plan, index) => ({
           day: typeof plan.day === "number" ? plan.day : index + 1,
+          focus: (plan.focus || plan.topic || "Interview Preparation").trim(),
+          tasks: (plan.tasks || [plan.type || "Practice interview preparation"])
+            .map((t) => (t || "").trim())
+            .filter(Boolean),
+        }))
+        .filter((plan) => plan.tasks.length > 0)
+        .slice(0, 7),
 
-          focus: plan.focus || plan.topic || "Interview Preparation",
-
-          tasks: plan.tasks || [plan.type || "Practice interview preparation"],
-        })) || [],
-
-      title: report.title || report.appliedPosition || "Software Developer",
+      title: (report.title || report.appliedPosition || "Software Developer").trim(),
     };
 
     console.log("NORMALIZED DATA:");
@@ -361,46 +297,45 @@ ${jobDescription}
     if (!validatedData.success) {
       console.log("VALIDATION ERRORS:");
       console.log(validatedData.error.issues);
-
       throw new Error("Invalid AI response");
     }
 
     return validatedData.data;
   } catch (error) {
+    console.log("GENERATE INTERVIEW REPORT ERROR:");
     console.log(error);
     throw error;
   }
 }
 
-
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch();
+
+  try {
     const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: "networkidle0" })
+    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
 
     const pdfBuffer = await page.pdf({
-        format: "A4", margin: {
-            top: "20mm",
-            bottom: "20mm",
-            left: "15mm",
-            right: "15mm"
-        }
-    })
+      format: "A4",
+      margin: {
+        top: "20mm",
+        bottom: "20mm",
+        left: "15mm",
+        right: "15mm",
+      },
+    });
 
-    await browser.close()
-
-    return pdfBuffer
+    return pdfBuffer;
+  } catch (error) {
+    console.log("PDF GENERATION ERROR:");
+    console.log(error);
+    throw error;
+  } finally {
+    await browser.close();
+  }
 }
 
 async function genarateResumePdf({ resume, selfDescription, jobDescription }) {
-  const resumePdfSchema = z.object({
-    html: z
-      .string()
-      .describe(
-        "The HTML content of the resume which will be converted to PDF using puppeteer and then parsed using ai to extract relevant information for interview report generation",
-      ),
-  });
-
   const prompt = `Generate resume for a candidate with the following details:
                         Resume: ${resume}
                         Self Description: ${selfDescription}
@@ -414,24 +349,31 @@ async function genarateResumePdf({ resume, selfDescription, jobDescription }) {
                         The resume should not be so lengthy, it should ideally be 1-2 pages long when converted to PDF not more than 2 pages. Focus on quality rather than quantity and make sure to include all the relevant information that can increase the candidate's chances of getting an interview call for the given job description.
                     `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: zodToJsonSchema(resumePdfSchema),
-      temperature: 0.3,
-    },
-  });
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: GEMINI_RESUME_HTML_SCHEMA,
+        temperature: 0.3,
+      },
+    });
 
-  const jsonContent = JSON.parse(response.text);
+    const jsonContent = JSON.parse(response.text);
 
-  const pdfBuffer = await generatePdfFromHtml(jsonContent.html);
-  
-  return pdfBuffer;
-  
+    if (!jsonContent.html || typeof jsonContent.html !== "string") {
+      throw new Error("AI did not return valid HTML content");
+    }
+
+    const pdfBuffer = await generatePdfFromHtml(jsonContent.html);
+
+    return pdfBuffer;
+  } catch (error) {
+    console.log("RESUME PDF GENERATION ERROR:");
+    console.log(error);
+    throw error;
+  }
 }
 
- 
-
-export {generateInterviewReport, genarateResumePdf};
+export { generateInterviewReport, genarateResumePdf };

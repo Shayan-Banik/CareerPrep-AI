@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useInterview } from "../hooks/useInterview.js";
 import { useNavigate } from "react-router-dom";
+import ProfileMenu from "./ProfileMenu.jsx";
 
 const Home = () => {
   const { loading, generateReport, reports } = useInterview();
@@ -29,14 +30,18 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen scroll-auto bg-[#0d1117]  text-gray-100 font-sans px-4 py-12">
+    <div className="min-h-screen scroll-auto bg-[#0d1117]  text-gray-100 font-sans px-4 py-12 ">
       {/* Ambient background glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[10%] right-[15%] w-[400px] h-[400px] bg-violet-600/10 rounded-full blur-[100px]" />
+        <div className="absolute top-[-10%] left-[20%] w-125 h-125 bg-indigo-600/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[10%] right-[15%] w-100 h-100 bg-violet-600/10 rounded-full blur-[100px]" />
       </div>
 
-      <div className="relative max-w-6xl mx-auto">
+          <div className="fixed top-4 right-4 bg-red-600">
+            <ProfileMenu />
+          </div>
+
+      <div className="relative max-w-6xl mx-auto mt-6">
         {/* Page Header */}
         <header className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold tracking-widest uppercase px-4 py-1.5 rounded-full mb-5">
@@ -52,7 +57,7 @@ const Home = () => {
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight mb-4">
             Create Your Custom{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-violet-400">
               Interview Plan
             </span>
           </h1>
@@ -94,7 +99,7 @@ const Home = () => {
                 onChange={(e) => {
                   setJobDescription(e.target.value);
                 }}
-                className="flex-1 min-h-0 max-h-[40vh] w-full bg-[#0d1117] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-gray-300 placeholder-gray-600 resize-none focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/40 transition-all duration-200"
+                className="flex-1 min-h-0 max-h-[40vh] w-full bg-[#0d1117] border border-white/8 rounded-xl px-4 py-3.5 text-sm text-gray-300 placeholder-gray-600 resize-none focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/40 transition-all duration-200"
                 placeholder={`Paste the full job description here...\ne.g. 'Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...'`}
                 maxLength={5000}
               />
@@ -104,8 +109,8 @@ const Home = () => {
             </div>
 
             {/* Vertical Divider */}
-            <div className="hidden lg:block w-px bg-white/[0.06] my-8" />
-            <div className="lg:hidden h-px bg-white/[0.06] mx-8" />
+            <div className="hidden lg:block w-px bg-white/6 my-8" />
+            <div className="lg:hidden h-px bg-white/6 mx-8" />
 
             {/* Right Panel - Profile */}
             <div className="flex-1 p-8 flex flex-col gap-5 min-h-0">
@@ -139,7 +144,7 @@ const Home = () => {
                   </span>
                 </label>
                 <label
-                  className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-white/[0.1] rounded-xl px-6 py-8 cursor-pointer hover:border-indigo-500/50 hover:bg-indigo-500/[0.04] transition-all duration-200 group"
+                  className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-white/10 rounded-xl px-6 py-8 cursor-pointer hover:border-indigo-500/50 hover:bg-indigo-500/4 transition-all duration-200 group"
                   htmlFor="resume">
                   <span className="text-gray-500 group-hover:text-indigo-400 transition-colors duration-200">
                     <svg
@@ -174,11 +179,11 @@ const Home = () => {
 
               {/* OR Divider */}
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-white/[0.06]" />
+                <div className="flex-1 h-px bg-white/6" />
                 <span className="text-xs font-semibold text-gray-600 tracking-widest">
                   OR
                 </span>
-                <div className="flex-1 h-px bg-white/[0.06]" />
+                <div className="flex-1 h-px bg-white/6" />
               </div>
 
               {/* Quick Self-Description */}
@@ -194,7 +199,7 @@ const Home = () => {
                   }}
                   id="selfDescription"
                   name="selfDescription"
-                  className="w-full h-[120px] max-h-[25vh] bg-[#0d1117] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-gray-300 placeholder-gray-600 resize-none focus:outline-none focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/40 transition-all duration-200"
+                  className="w-full h-30 max-h-[25vh] bg-[#0d1117] border border-white/08 rounded-xl px-4 py-3.5 text-sm text-gray-300 placeholder-gray-600 resize-none focus:outline-none focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/40 transition-all duration-200"
                   placeholder="Briefly describe your experience, key skills, and years of experience if you don't have a resume handy..."
                 />
               </div>
@@ -243,14 +248,14 @@ const Home = () => {
           </div>
 
           {/* Card Footer */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-8 py-5 bg-white/[0.025] border-t border-white/[0.06]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-8 py-5 bg-white/2.5 border-t border-white/6">
             <span className="text-xs text-gray-500 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
               AI-Powered Strategy Generation &bull; Approx 30s
             </span>
             <button
               onClick={handleGenerateReport}
-              className="inline-flex items-center gap-2.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white text-sm font-semibold px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-200 active:scale-[0.98]">
+              className="inline-flex items-center gap-2.5 bg-linear-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white text-sm font-semibold px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-200 active:scale-[0.98]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="15"

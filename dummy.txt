@@ -4,8 +4,104 @@ UI, hook, state and API layer
 
 
 
+Target JOB Description
+# MERN Stack Developer – Job Description
 
-//**
+## Job Title
+
+MERN Stack Developer
+
+## Job Summary
+
+We are looking for a skilled MERN Stack Developer to design, develop, test, and maintain modern web applications using the MERN stack (MongoDB, Express.js, React.js, and Node.js). The ideal candidate should have strong problem-solving skills, experience building scalable applications, and a passion for writing clean, maintainable code.
+
+## Key Responsibilities
+
+* Develop responsive and user-friendly web applications using React.js.
+* Build RESTful APIs using Node.js and Express.js.
+* Design and manage MongoDB databases.
+* Integrate frontend applications with backend services.
+* Write clean, reusable, and efficient code.
+* Debug, test, and optimize application performance.
+* Implement authentication and authorization (JWT, OAuth, etc.).
+* Collaborate with UI/UX designers, QA engineers, and other developers.
+* Use Git for version control and participate in code reviews.
+* Deploy and maintain applications on cloud platforms.
+* Stay updated with the latest web development trends and technologies.
+
+## Required Skills
+
+* Strong knowledge of HTML5, CSS3, JavaScript (ES6+), and TypeScript (preferred).
+* Proficiency in React.js and its ecosystem (Hooks, Context API, Redux/Redux Toolkit).
+* Experience with Node.js and Express.js.
+* Strong understanding of MongoDB and Mongoose.
+* Knowledge of REST APIs and API integration.
+* Familiarity with Git and GitHub.
+* Understanding of authentication, authorization, and web security best practices.
+* Experience with responsive design and cross-browser compatibility.
+* Basic knowledge of cloud deployment (Vercel, Netlify, Render, AWS, etc.).
+* Good debugging and problem-solving skills.
+
+## Preferred Qualifications
+
+* Bachelor's degree in Computer Science, Information Technology, or a related field.
+* Experience with Next.js is a plus.
+* Familiarity with Docker and CI/CD pipelines.
+* Knowledge of testing frameworks such as Jest or Cypress.
+* Understanding of Agile/Scrum development methodologies.
+
+## Nice-to-Have Skills
+
+* GraphQL
+* WebSockets (Socket.IO)
+* Redis
+* PostgreSQL or MySQL
+* Tailwind CSS
+* React Query or TanStack Query
+
+## Experience
+
+* Freshers with strong projects are encouraged to apply.
+* 1–3 years of professional MERN stack development experience is preferred.
+
+## What We Offer
+
+* Competitive salary
+* Flexible work environment
+* Learning and career growth opportunities
+* Collaborative team culture
+* Exposure to modern technologies and real-world projects
+
+
+
+
+//** Self Description
+**Self Description**
+
+I am a passionate and detail-oriented MERN Stack Developer with a strong foundation in full-stack web development. I enjoy building responsive, scalable, and user-friendly web applications using MongoDB, Express.js, React.js, and Node.js.
+
+I have experience developing RESTful APIs, integrating frontend and backend systems, and working with databases to create efficient and reliable applications. I am also comfortable using Git for version control and continuously learning modern technologies such as TypeScript, Next.js, and cloud deployment platforms.
+
+I am a quick learner with strong problem-solving skills and enjoy collaborating with teams to deliver high-quality software. I believe in writing clean, maintainable code and continuously improving my technical skills to stay up to date with industry best practices.
+
+I am excited to contribute my knowledge, learn from experienced professionals, and grow as a full-stack developer while building impactful applications.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Arjun Mehta — Software Engineer
 +91 9876543210 | arjunmehta.dev@gmail.com | Bangalore, India
 LinkedIn: https://linkedin.com/in/arjunmehta | GitHub: https://github.com/arjunmehta | Portfolio: https://arjunmehta.dev

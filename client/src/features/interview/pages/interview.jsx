@@ -244,7 +244,7 @@ const Interview = () => {
               </svg>
             </button>
             {mobileMenuOpen && (
-              <div className="absolute top-full left-0 mt-1.5 z-50 bg-[#1a1d30] border border-white/[0.1] rounded-xl overflow-hidden shadow-2xl min-w-[210px]">
+              <div className="absolute top-full left-0 mt-1.5 z-50 bg-[#1a1d30] border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-52.5">
                 {NAV_ITEMS.map(item => (
                   <button
                     key={item.id}
@@ -252,7 +252,7 @@ const Interview = () => {
                     className={`flex items-center gap-2.5 w-full px-4 py-3 text-[13px] transition-colors
                       ${activeNav === item.id
                         ? 'bg-violet-500/20 text-violet-300 font-medium'
-                        : 'text-white/50 hover:bg-white/[0.04] hover:text-white/80'}`}
+                        : 'text-white/50 hover:bg-white/4 hover:text-white/80'}`}
                   >
                     {item.icon}
                     {item.label}
@@ -311,7 +311,7 @@ const Interview = () => {
       {/* ════════════════════════════════════
           DESKTOP LAYOUT  (>= lg)
       ════════════════════════════════════ */}
-      <div className="hidden lg:grid lg:grid-cols-[200px_1px_1fr_1px_220px] bg-[#13162a] border border-white/[0.07] rounded-2xl overflow-hidden min-h-[580px]">
+      <div className="hidden lg:grid lg:grid-cols-[200px_1px_1fr_1px_220px] bg-[#13162a] border border-white/[0.07] rounded-2xl overflow-hidden min-h-145">
 
         {/* Left Nav */}
         <nav className="flex flex-col justify-between p-4 bg-[#0d0f1a] border-r border-white/[0.07]">
@@ -326,7 +326,7 @@ const Interview = () => {
                 className={`flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl mb-1 text-[13px] transition-all duration-150 border text-left
                   ${activeNav === item.id
                     ? 'bg-violet-500/15 text-violet-300 border-violet-500/30 font-medium'
-                    : 'text-white/40 border-transparent hover:bg-white/[0.04] hover:text-white/70'
+                    : 'text-white/40 border-transparent hover:bg-white/4 hover:text-white/70'
                   }`}
               >
                 <span className={activeNav === item.id ? 'text-violet-300' : 'text-white/30'}>
@@ -351,7 +351,7 @@ const Interview = () => {
         <div className="bg-white/[0.07]" />
 
         {/* Center Content */}
-        <main className="p-6 overflow-y-auto max-h-[580px] bg-[#13162a]">
+        <main className="p-6 overflow-y-auto max-h-145 bg-[#13162a]">
           {activeNav === 'technical' && (
             <section>
               <SectionHeader title="Technical Questions" badge={`${report.technicalQuestions.length} questions`} />
