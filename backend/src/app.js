@@ -16,19 +16,29 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const allowedOrigins = [
+    'https://career-prep-ai-sigma.vercel.app',
+    'http://localhost:5173',
+];
+
 app.use(cors({
-    origin: 'career-prep-ai-sigma.vercel.app',
-    credentials: true
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
 }));
 
 // Routes
 app.use("/api/auth", router)
 app.use("/api/interview", InterviewRouter);
 
-
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
     connectDB();
-    console.log('Server is running on port 3000');
+    console.log(`Server is running on port ${PORT}`);
 });
 
 export default app;
