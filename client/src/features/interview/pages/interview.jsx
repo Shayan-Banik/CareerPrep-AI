@@ -33,11 +33,11 @@ const NAV_ITEMS = [
 const QuestionCard = ({ item, index }) => {
   const [open, setOpen] = useState(false)
   return (
-    <div className="bg-[#1a1d30] border border-white/[0.07] rounded-xl overflow-hidden transition-all duration-150 hover:border-white/[0.12]">
+    <div className="bg-[#1a1d30] border border-white/[0.07] rounded-xl overflow-hidden transition-all duration-150 hover:border-white/12">
       {/* Header — always visible */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-start gap-3 px-4 py-4 text-left hover:bg-white/[0.02] transition-colors"
+        className="w-full flex items-start gap-3 px-4 py-4 text-left hover:bg-white/2 transition-colors"
       >
         <span className="font-mono text-[11px] font-semibold text-violet-400 bg-violet-500/15 border border-violet-500/25 px-2 py-0.5 rounded-full shrink-0 mt-0.5">
           Q{index + 1}
@@ -198,6 +198,7 @@ const SidebarContent = ({ report, uid = "a" }) => {
 
 // ── Loading Screen ──
 const LoadingScreen = () => (
+  
   <div className="min-h-screen bg-[#0d0f1a] flex items-center justify-center">
     <div className="flex flex-col items-center gap-4">
       <div className="w-10 h-10 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />

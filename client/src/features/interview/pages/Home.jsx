@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useInterview } from "../hooks/useInterview.js";
 import { useNavigate } from "react-router-dom";
 import ProfileMenu from "./ProfileMenu.jsx";
+import { motion } from "motion/react";
 
 const Home = () => {
   const { loading, generateReport, reports } = useInterview();
@@ -24,7 +25,40 @@ const Home = () => {
   if (loading) {
     return (
       <main className="loading-screen">
-        <h1 className="text-amber-400 font-bold text-2xl">Loading your interview plan...</h1>
+        <div className="min-h-screen bg-[#0d0f1a] flex items-center justify-center relative overflow-hidden">
+          {/* ambient glow */}
+          <div className="absolute w-72 h-72 bg-violet-600/20 rounded-full blur-3xl" />
+
+          <div className="flex flex-col items-center gap-5 relative z-10">
+            <div className="relative w-14 h-14">
+              {/* outer track */}
+              <div className="absolute inset-0 rounded-full border-2 border-white/5" />
+              {/* spinning gradient ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-transparent border-t-violet-400 border-r-indigo-400"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              />
+              {/* inner pulse dot */}
+              <motion.div
+                className="absolute inset-0 m-auto w-2 h-2 rounded-full bg-violet-400"
+                animate={{ scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            </div>
+
+            <motion.p
+              className="text-[14px] text-white/40 font-medium tracking-wide"
+              animate={{ opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
+              Loading your interview plan…
+            </motion.p>
+          </div>
+        </div>
       </main>
     );
   }
@@ -37,9 +71,9 @@ const Home = () => {
         <div className="absolute bottom-[10%] right-[15%] w-100 h-100 bg-violet-600/10 rounded-full blur-[100px]" />
       </div>
 
-          <div className="fixed top-4 right-4 bg-red-600">
-            <ProfileMenu />
-          </div>
+      <div className="fixed top-4 right-4 bg-red-600">
+        <ProfileMenu />
+      </div>
 
       <div className="relative max-w-6xl mx-auto mt-6">
         {/* Page Header */}
@@ -271,35 +305,38 @@ const Home = () => {
 
         {/* Recent Reports List */}
         {reports.length > 0 && (
-                    <section className="mt-12">
-                        <h2 className="text-lg font-semibold text-white mb-5">My Recent Interview Plans</h2>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {reports.map(report => (
-                                <li
-                                    key={report._id}
-                                    className="bg-[#161b24] border border-white/[0.07] rounded-xl px-5 py-4 cursor-pointer hover:border-indigo-500/40 hover:bg-indigo-500/[0.04] transition-all duration-200 group"
-                                    onClick={() => navigate(`/interview/${report._id}`)}
-                                >
-                                    <h3 className="font-semibold text-white text-sm group-hover:text-indigo-300 transition-colors truncate mb-1">
-                                        {report.title || 'Untitled Position'}
-                                    </h3>
-                                    <p className="text-xs text-gray-500 mb-3">
-                                        Generated on {new Date(report.createdAt).toLocaleDateString()}
-                                    </p>
-                                    <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${
-                                        report.matchScore >= 80
-                                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
-                                            : report.matchScore >= 60
-                                            ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20'
-                                            : 'bg-rose-500/15 text-rose-400 border border-rose-500/20'
-                                    }`}>
-                                        Match Score: {report.matchScore}%
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
-                )}
+          <section className="mt-12">
+            <h2 className="text-lg font-semibold text-white mb-5">
+              My Recent Interview Plans
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {reports.map((report) => (
+                <li
+                  key={report._id}
+                  className="bg-[#161b24] border border-white/[0.07] rounded-xl px-5 py-4 cursor-pointer hover:border-indigo-500/40 hover:bg-indigo-500/4 transition-all duration-200 group"
+                  onClick={() => navigate(`/interview/${report._id}`)}>
+                  <h3 className="font-semibold text-white text-sm group-hover:text-indigo-300 transition-colors truncate mb-1">
+                    {report.title || "Untitled Position"}
+                  </h3>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Generated on{" "}
+                    {new Date(report.createdAt).toLocaleDateString()}
+                  </p>
+                  <span
+                    className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${
+                      report.matchScore >= 80
+                        ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
+                        : report.matchScore >= 60
+                          ? "bg-amber-500/15 text-amber-400 border border-amber-500/20"
+                          : "bg-rose-500/15 text-rose-400 border border-rose-500/20"
+                    }`}>
+                    Match Score: {report.matchScore}%
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* Page Footer */}
         <footer className="mt-12 flex items-center justify-center gap-6">
